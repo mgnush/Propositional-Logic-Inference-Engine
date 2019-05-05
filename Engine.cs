@@ -33,7 +33,13 @@ namespace ai_ass2
                 Console.WriteLine("{0}", line);
             }
 
-            string[] sentences = tellask[0].Split(';');
+            string[] sentences = tellask[0].Split(';', );
+
+            // TESTING ONLY
+            foreach (string line in sentences)
+            {
+                Console.WriteLine("{0}", line);
+            }
         }
     }
 }
