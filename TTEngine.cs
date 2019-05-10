@@ -12,5 +12,22 @@ namespace ai_ass2
         {
 
         }
+
+        public bool TTEntails()
+        {
+            return false;
+        }
+
+        public bool TTCheckAll()
+        {
+
+            return false;
+
+        }
+
+        public override string KbEntails()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

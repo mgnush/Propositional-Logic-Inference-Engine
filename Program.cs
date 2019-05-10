@@ -30,6 +30,7 @@ namespace ai_ass2
                     return;
             }
 
+            Console.WriteLine(engine.KbEntails());
         }
     }
 }

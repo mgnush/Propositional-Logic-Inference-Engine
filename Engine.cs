@@ -8,7 +8,8 @@ namespace ai_ass2
 {
     public abstract class Engine
     {
-        protected List<string> _kb;
+        protected KnowledgeBase _kb;
+        protected Symbol _query;
 
         public Engine(string file)
         {
@@ -17,7 +18,6 @@ namespace ai_ass2
             string[] lines = file.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
             string[] tellask = new string[2];
             int i = 0;
-
             foreach (string line in lines)
             {
                 if (!String.IsNullOrWhiteSpace(line))
@@ -33,13 +33,14 @@ namespace ai_ass2
                 Console.WriteLine("{0}", line);
             }
 
-            string[] sentences = tellask[0].Split(';', );
+            // Load tell into kb
+            string[] sentences = tellask[0].Split(';');
+            _kb = new KnowledgeBase(sentences);
 
-            // TESTING ONLY
-            foreach (string line in sentences)
-            {
-                Console.WriteLine("{0}", line);
-            }
+            // Obtain ask
+            _query = new Symbol(tellask[1].Trim());
         }
+
+        public abstract string KbEntails();
     }
 }
