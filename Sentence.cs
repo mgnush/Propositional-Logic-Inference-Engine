@@ -11,31 +11,42 @@ namespace ai_ass2
         private List<Symbol> _lhs;
         private Symbol _rhs;
         private List<Symbol> _allSymbols;
-
-        public Sentence(string s)
+      
+        public Sentence(string rhs)
         {
-            string[] stringSeparators = new string[] { "=>" };
-            string[] vs = s.Split(stringSeparators, StringSplitOptions.None);
+            _allSymbols = new List<Symbol>();
+            _lhs = new List<Symbol>();                  
 
-            // LHS - need to remove white spaces
-            string[] lhs = vs[0].Split('&');
-            foreach(string symb in lhs)
-            {
-                string symbol = symb.Trim();
-                _lhs.Add(new Symbol(symbol));
-            }
-
-            string rhs = vs[1].Trim();
-            _rhs = new Symbol(rhs);
+            _rhs = new Symbol(rhs.Trim());
+            _allSymbols.Add(_rhs);           
         }
 
-        public List<Symbol> AllSymbols { get => _allSymbols; set => _allSymbols = value; }
-
-        public bool IsSatisfied(List<Symbol> symbs)
+        public Sentence(string lhs, string rhs)
         {
-            foreach(Symbol s in symbs)
+            _allSymbols = new List<Symbol>();
+            _lhs = new List<Symbol>();
+
+            // RHS
+            _rhs = new Symbol(rhs.Trim());
+            _allSymbols.Add(_rhs);
+
+            // LHS 
+            string[] lh = lhs.Split('&');
+            foreach (string symbol in lh)
             {
-                foreach(Symbol ls in _lhs)
+                _lhs.Add(new Symbol(symbol.Trim()));
+            }
+            _allSymbols.AddRange(_lhs);
+    }
+
+        public List<Symbol> AllSymbols { get => _allSymbols; }
+
+        public bool IsSatisfied(List<Symbol> model)
+        {
+            // Obtain symbol values from model
+            foreach (Symbol s in model)
+            {
+                foreach (Symbol ls in _lhs)
                 {
                     if (s.Name.Equals(ls.Name))
                     {
@@ -48,13 +59,13 @@ namespace ai_ass2
                 }
             }
 
-            bool lhs = _lhs.First().Value;
+            bool lhs = true;
             foreach (Symbol ls in _lhs)
             {
                 lhs &= ls.Value;
             }
 
-            return (lhs == _rhs.Value);
+            return !(lhs & !_rhs.Value);
         }
     }
 }
