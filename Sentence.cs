@@ -40,6 +40,17 @@ namespace ai_ass2
     }
 
         public List<Symbol> AllSymbols { get => _allSymbols; }
+        public List<Symbol> Premises { get => _lhs; }
+        public Symbol Head { get => _rhs; }
+
+        public bool ContainsPremise(Symbol search)
+        {
+            foreach (Symbol symbol in _lhs)
+            {
+                if (symbol.Name.Equals(search.Name)) { return true; }
+            }
+            return false;
+        }
 
         public bool IsSatisfied(List<Symbol> model)
         {

@@ -40,22 +40,17 @@ namespace ai_ass2
                 foreach(Symbol symbol in sentence.AllSymbols)
                 {
                     bool newSymbol = true;
-
-                    if (_symbols.Count == 0)
+             
+                    foreach (Symbol kbs in _symbols)
                     {
-                        _symbols.Add(symbol);
-                    }
-                    else
-                    {
-                        foreach (Symbol kbs in _symbols)
+                        if (symbol.Name.Equals(kbs.Name))
                         {
-                            if (symbol.Name.Equals(kbs.Name))
-                            {
-                                newSymbol = false;                               
-                            }
+                            newSymbol = false;
+                            break;
                         }
-                        if (newSymbol) { _symbols.Add(symbol); }
                     }
+                    if (newSymbol) { _symbols.Add(symbol); }
+                    
                 }
             }
         }
