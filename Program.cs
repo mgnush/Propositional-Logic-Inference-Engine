@@ -19,7 +19,7 @@ namespace ai_ass2
                     engine = new TTEngine(file);
                     break;
                 case "BC":
-                    engine = new TTEngine(file);
+                    engine = new BCEngine(file);
                     break;
                 case "FC":
                     engine = new FCEngine(file);

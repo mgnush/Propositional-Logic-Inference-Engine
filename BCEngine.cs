@@ -15,45 +15,74 @@ namespace ai_ass2
 
         private bool BCEntails(List<Symbol> entailed)
         {
-            List<Symbol> agenda = new List<Symbol>();
-            List<SymbolTable> inferred = new List<SymbolTable>();
-            List<CountTable> count = new List<CountTable>();
+            List<Symbol> goalStack = new List<Symbol>();
+            List<Symbol> goalFailed = new List<Symbol>();
 
+            goalStack.Add(_query);
 
-            // Add all symbols to the inferred list
-            foreach (Symbol symbol in _kb.Symbols)
+            while (goalStack.Count > 0)
             {
-                inferred.Add(new SymbolTable(symbol, false));
-            }
+                Symbol p = goalStack.Last();
 
-            agenda.Add(_query);
+                List<Sentence> sentences = new List<Sentence>();
+                sentences.AddRange(_kb.Sentences.FindAll(x => x.Head.Name.Equals(p.Name)));   // Retrieve all sentences with p as head
+                int ruleFalse = sentences.Count; // Goal must be false in all rules to conclude false      
+                int newGoals = 0;
 
-            while (agenda.Count > 0)
-            {
-                Symbol p = agenda.Last();
-                agenda.Remove(p);
-                SymbolTable st = inferred.Find(x => x.symbol.Name.Equals(p.Name));
-                if (!st.value)
+                foreach (Sentence rule in sentences)
                 {
-                    st.value = true;
-                    foreach (Sentence sentence in _kb.Sentences)
+                    bool ruleEntailed = true;                    
+
+                    foreach (Symbol premise in rule.Premises)
                     {
-                        if (sentence.ContainsPremise(p))
+                        // Cannot entail head unless all premises are entailed // removing too aggressivle, entailed...
+                        if (!entailed.Exists(x => x.Name.Equals(premise.Name)))
                         {
-                            CountTable ct = count.Find(x => x.sentence == sentence);
-                            ct.premises--;
-                            if (ct.premises == 0)
-                            {
-                                entailed.Add(sentence.Head);
-                                if (sentence.Head.Name.Equals(_query.Name)) { return true; }
-                                agenda.Add(sentence.Head);
-                            }
+                            ruleEntailed = false;
                         }
+                        if (goalFailed.Exists(x => x.Name.Equals(premise.Name)))
+                        {
+                            ruleFalse--;
+                            break;
+                        }                            
+                    }
+
+                    if (ruleEntailed)
+                    {
+                        entailed.Add(p);
+                        goalStack.Remove(p);
+                        break;                               
+                    } else
+                    {                        
+                        foreach (Symbol premise in rule.Premises)
+                        {
+                            if (!entailed.Exists(x => x.Name.Equals(premise.Name)) && !goalFailed.Exists(x => x.Name.Equals(premise.Name)))
+                            {
+                                if (!goalStack.Exists(x => x.Name.Equals(premise.Name)))
+                                {
+                                    goalStack.Add(premise);
+                                    newGoals++;
+                                }                                       
+                            }
+                        }                      
                     }
                 }
-            }
 
-            return false;
+                //check if p is false
+                if (ruleFalse == 0)
+                {
+                    goalFailed.Add(p);
+                    goalStack.Remove(p);
+                }
+
+                if (newGoals == 0)
+                {
+                    goalStack.Remove(p);
+                }
+
+            }
+            
+            return entailed.Contains(_query);
         }
 
 
