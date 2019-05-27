@@ -11,7 +11,8 @@ namespace ai_ass2
         private List<Symbol> _lhs;
         private Symbol _rhs;
         private List<Symbol> _allSymbols;
-      
+
+        // Constructor for sentences with no premises
         public Sentence(string rhs)
         {
             _allSymbols = new List<Symbol>();
@@ -21,6 +22,7 @@ namespace ai_ass2
             _allSymbols.Add(_rhs);           
         }
 
+        //Constructor for sentences with two sides
         public Sentence(string lhs, string rhs)
         {
             _allSymbols = new List<Symbol>();
@@ -52,6 +54,11 @@ namespace ai_ass2
             return false;
         }
 
+        /* Return whether this sentence is satisfied given 
+         * a model of the world.
+         * @param model the list of symbols (with values) in the model
+         * @return Whether the sentence is satisfied in given model  
+         */
         public bool IsSatisfied(List<Symbol> model)
         {
             // Obtain symbol values from model
@@ -76,7 +83,7 @@ namespace ai_ass2
                 lhs &= ls.Value;
             }
 
-            return !(lhs & !_rhs.Value);
+            return !(lhs & !_rhs.Value); // The sentence is satisfied unless the premises are true and head is false
         }
     }
 }

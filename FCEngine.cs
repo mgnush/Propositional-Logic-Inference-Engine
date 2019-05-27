@@ -40,8 +40,8 @@ namespace ai_ass2
         private bool FCEntails(List<Symbol> entailed)
         {
             List<Symbol> agenda = new List<Symbol>();
-            List<SymbolTable> inferred = new List<SymbolTable>();
-            List<CountTable> count = new List<CountTable>();
+            List<SymbolTable> inferred = new List<SymbolTable>(); // Table of all symbols and whether they have been inferred yet
+            List<CountTable> count = new List<CountTable>(); // Keep tabs on premises that have been fulfilled for each head
             
 
             // Add all symbols to the inferred list
@@ -66,21 +66,25 @@ namespace ai_ass2
             {
                 Symbol p = agenda.Last();
                 agenda.Remove(p);
-                SymbolTable st = inferred.Find(x => x.symbol.Name.Equals(p.Name));
-                if (!st.value)
+                SymbolTable inf = inferred.Find(x => x.symbol.Name.Equals(p.Name));
+
+                if (!inf.value) // Don't infer any symbols more than once
                 {
-                    st.value = true;
+                    inf.value = true;
+                    // Find all sentences with premise p
                     foreach (Sentence sentence in _kb.Sentences)
                     {
                         if (sentence.ContainsPremise(p))
                         {
+                            // Indicate that a sentence premise has been fullfilled
                             CountTable ct = count.Find(x => x.sentence == sentence);
                             ct.premises--;
+                            // Sentence had is entailed if all premises are fullfilled
                             if (ct.premises == 0)
                             {
                                 entailed.Add(sentence.Head);
-                                if (sentence.Head.Name.Equals(_query.Name)) { return true; }
-                                agenda.Add(sentence.Head);                                
+                                if (sentence.Head.Name.Equals(_query.Name)) { return true; } // Exit search when query is entailed
+                                agenda.Add(sentence.Head); // Add entailed head to agenda                      
                             }
                         }
                     }

@@ -22,6 +22,7 @@ namespace ai_ass2
                 string[] vs = s.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
                 Sentence sentence;
 
+                // Build sentence according to number of sides (0, 1 or 2)
                 switch(vs.Length)
                 {
                     case 0:
@@ -36,7 +37,7 @@ namespace ai_ass2
                         break;
                 }
 
-                
+                // Add new symbols to list of symbols in kb
                 foreach(Symbol symbol in sentence.AllSymbols)
                 {
                     bool newSymbol = true;

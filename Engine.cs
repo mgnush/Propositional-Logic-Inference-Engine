@@ -28,10 +28,12 @@ namespace ai_ass2
             }
 
             // TESTING ONLY
+            /*
             foreach (string line in tellask)
             {
                 Console.WriteLine("{0}", line);
             }
+            */
 
             // Load tell into kb
             string[] sentences = tellask[0].Split(';');

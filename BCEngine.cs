@@ -15,19 +15,19 @@ namespace ai_ass2
 
         private bool BCEntails(List<Symbol> entailed)
         {
-            List<Symbol> goalStack = new List<Symbol>();
-            List<Symbol> goalFailed = new List<Symbol>();
+            List<Symbol> goalStack = new List<Symbol>(); // Equivalent to FC agenda
+            List<Symbol> goalFailed = new List<Symbol>(); // Known failed goals
 
-            goalStack.Add(_query);
+            goalStack.Add(_query);  // Start with the query
 
             while (goalStack.Count > 0)
             {
                 Symbol p = goalStack.Last();
 
                 List<Sentence> sentences = new List<Sentence>();
-                sentences.AddRange(_kb.Sentences.FindAll(x => x.Head.Name.Equals(p.Name)));   // Retrieve all sentences with p as head
+                sentences.AddRange(_kb.Sentences.FindAll(x => x.Head.Name.Equals(p.Name))); // Retrieve all sentences with p as head
                 int ruleFalse = sentences.Count; // Goal must be false in all rules to conclude false      
-                int newGoals = 0;
+                int newGoals = 0; // The number of new goals p introduces
 
                 foreach (Sentence rule in sentences)
                 {
@@ -35,15 +35,16 @@ namespace ai_ass2
 
                     foreach (Symbol premise in rule.Premises)
                     {
-                        // Cannot entail head unless all premises are entailed // removing too aggressivle, entailed...
+                        // Cannot entail head unless all premises are entailed
                         if (!entailed.Exists(x => x.Name.Equals(premise.Name)))
                         {
                             ruleEntailed = false;
                         }
+                        // All rules with head p must be false to fail p
                         if (goalFailed.Exists(x => x.Name.Equals(premise.Name)))
                         {
                             ruleFalse--;
-                            break;
+                            break; // Only one premise need be false for rule to fail
                         }                            
                     }
 
@@ -51,11 +52,12 @@ namespace ai_ass2
                     {
                         entailed.Add(p);
                         goalStack.Remove(p);
-                        break;                               
+                        break; // Only one rule need be true to entail p                   
                     } else
                     {                        
                         foreach (Symbol premise in rule.Premises)
                         {
+                            // Add subgoal to goalstack if it is not already on it, is not entailed, and has not failed yet
                             if (!entailed.Exists(x => x.Name.Equals(premise.Name)) && !goalFailed.Exists(x => x.Name.Equals(premise.Name)))
                             {
                                 if (!goalStack.Exists(x => x.Name.Equals(premise.Name)))
@@ -68,14 +70,14 @@ namespace ai_ass2
                     }
                 }
 
-                //check if p is false
-                if (ruleFalse == 0)
+                // If all rules with head p failed, remove p from goalstack and add to failed goals
+                if ((ruleFalse == 0))
                 {
                     goalFailed.Add(p);
                     goalStack.Remove(p);
                 }
-
-                if (newGoals == 0)
+                // Remove p from goalstack if introduces no new subgoals
+                if (newGoals == 0) 
                 {
                     goalStack.Remove(p);
                 }

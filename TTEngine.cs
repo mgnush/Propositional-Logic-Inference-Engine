@@ -25,6 +25,9 @@ namespace ai_ass2
             return false;
         }
 
+        /* CHeck
+         * 
+         */
         private bool TTCheckAll()
         {
             foreach(Sentence sentence in _kb.Sentences)
@@ -35,13 +38,13 @@ namespace ai_ass2
                 }
             }
 
-            return TTQuery();   // Return true if all sentences hold, and query is satisfied
+            return TTQuery(); // Return true if all sentences hold, and query is satisfied
 
         }
 
         public override string KbEntails()
         {
-            // iterate through models
+            // Iterate through models
             long numberModels = (long)Math.Pow(2, _kb.Symbols.Count);
             long trueModels = 0;
 
