@@ -13,6 +13,9 @@ namespace ai_ass2
 
         }
 
+        /* Checks the value of the query in the current model
+         * @return Whether the query is true
+         */
         private bool TTQuery()
         {
             foreach(Symbol symbol in _kb.Symbols)
@@ -25,8 +28,9 @@ namespace ai_ass2
             return false;
         }
 
-        /* CHeck
-         * 
+        /* Checks whether every sentence in the kb is satisfied.
+         * Uses the current value of all symbols in the model
+         * @return whether every sentence in kb is satisfied 
          */
         private bool TTCheckAll()
         {
@@ -48,6 +52,7 @@ namespace ai_ass2
             long numberModels = (long)Math.Pow(2, _kb.Symbols.Count);
             long trueModels = 0;
 
+            // Count the number of models that are entailed by kb
             for(long i = 0; i < numberModels; i++)
             {
                 string model = Convert.ToString(i, 2).PadLeft(_kb.Symbols.Count, '0');
