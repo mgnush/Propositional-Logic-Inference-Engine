@@ -47,11 +47,7 @@ namespace ai_ass2
 
         public bool ContainsPremise(Symbol search)
         {
-            foreach (Symbol symbol in _lhs)
-            {
-                if (symbol.Name.Equals(search.Name)) { return true; }
-            }
-            return false;
+            return _lhs.Exists(x => x.Name.Equals(search.Name));
         }
 
         /* Return whether this sentence is satisfied given 

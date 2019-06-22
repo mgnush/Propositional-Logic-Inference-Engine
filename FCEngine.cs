@@ -6,28 +6,19 @@ using System.Threading.Tasks;
 
 namespace ai_ass2
 {
-    public struct SymbolTable
+    public class CountTable
     {
-        public Symbol symbol;
-        public bool value;
-
-        public SymbolTable(Symbol s, bool v)
-        {
-            symbol = s;
-            value = v;
-        }       
-    }
-
-    public struct CountTable
-    {
-        public Sentence sentence;
-        public int premises;
+        private Sentence _sentence;
+        private int _premises;
 
         public CountTable(Sentence s)
         {
-            sentence = s;
-            premises = s.Premises.Count;
+            _sentence = s;
+            _premises = s.Premises.Count;
         }
+
+        public int Premises { get => _premises; set => _premises = value; }
+        public Sentence Sentence { get => _sentence; }
     }
 
     public class FCEngine : Engine
@@ -40,16 +31,9 @@ namespace ai_ass2
         private bool FCEntails(List<Symbol> entailed)
         {
             List<Symbol> agenda = new List<Symbol>();
-            List<SymbolTable> inferred = new List<SymbolTable>(); // Table of all symbols and whether they have been inferred yet
+            List<Symbol> inferred = new List<Symbol>(); // List of all symbols that have been inferred
             List<CountTable> count = new List<CountTable>(); // Keep tabs on premises that have been fulfilled for each head
-            
-
-            // Add all symbols to the inferred list
-            foreach (Symbol symbol in _kb.Symbols)
-            {                
-                inferred.Add(new SymbolTable(symbol, false));
-            }
-
+           
             foreach (Sentence sentence in _kb.Sentences)
             {                
                 if (sentence.Premises.Count == 0)
@@ -66,25 +50,24 @@ namespace ai_ass2
             {
                 Symbol p = agenda.Last();
                 agenda.Remove(p);
-                SymbolTable inf = inferred.Find(x => x.symbol.Name.Equals(p.Name));
 
-                if (!inf.value) // Don't infer any symbols more than once
+                if (!inferred.Exists(x => x.Name.Equals(p.Name))) // Don't infer any symbols more than once
                 {
-                    inf.value = true;
+                    inferred.Add(p);
                     // Find all sentences with premise p
                     foreach (Sentence sentence in _kb.Sentences)
                     {
                         if (sentence.ContainsPremise(p))
                         {
                             // Indicate that a sentence premise has been fullfilled
-                            CountTable ct = count.Find(x => x.sentence == sentence);
-                            ct.premises--;
-                            // Sentence had is entailed if all premises are fullfilled
-                            if (ct.premises == 0)
+                            CountTable ct = count.Find(x => x.Sentence == sentence);
+                            ct.Premises--;
+                            // Sentence head is entailed if all premises are fullfilled
+                            if (ct.Premises == 0)
                             {
                                 entailed.Add(sentence.Head);
                                 if (sentence.Head.Name.Equals(_query.Name)) { return true; } // Exit search when query is entailed
-                                agenda.Add(sentence.Head); // Add entailed head to agenda                      
+                                agenda.Add(sentence.Head); // Add entailed head to agenda  
                             }
                         }
                     }

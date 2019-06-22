@@ -12,7 +12,7 @@ iengine method filename
  ----------
 | Features |
  ----------
-* Truth-Table (TT)
+* Truth-Table (TT) - Only works with HornKB
 * Forward Chaining (FC)
 * Backward Chaining (BC)
 
@@ -21,18 +21,29 @@ iengine method filename
  ------------
 Only some of the test cases used are listed here.
 
-Cases with deliberately not-entailed combinations of kb's and query:
+Entailed
 * TELL
-  p2=> p3; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;
+  p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;
   ASK
   d
-
-Cases with deliberately entailed queries:
 * TELL
-  p2=> p3; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2; p1;
+  p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;
   ASK
-  d
+  f
+* TELL
+  P=> Q; L&M => P; B&L => M; A&P => L; A&B => L; A; B;
+  ASK
+  Q
 
+Not Entailed
+* TELL
+  P=> Q; L&M => P; B&L => M; A&P => L; A&B => L; A;
+  ASK
+  Q
+* TELL
+  p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;
+  ASK
+  g
 
  ----------------------------
 | Acknowledgements/Resources |
@@ -48,4 +59,5 @@ of the algorithms.
  -------
 | Notes |
  -------
-* TT
+* TT Is implemented using breadth-first approach, counting true models
+     and models where (KB => a) is valid, instead of depth-first.

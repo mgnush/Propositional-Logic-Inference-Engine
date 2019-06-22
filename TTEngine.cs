@@ -42,17 +42,18 @@ namespace ai_ass2
                 }
             }
 
-            return TTQuery(); // Return true if all sentences hold, and query is satisfied
+            return true; // Return true if all sentences hold
 
         }
 
         public override string KbEntails()
         {
-            // Iterate through models
+            // Iterate through models (BFS)
             long numberModels = (long)Math.Pow(2, _kb.Symbols.Count);
             long trueModels = 0;
+            long validModels = 0;
 
-            // Count the number of models that are entailed by kb
+            // Count the number of models that are true/entailed
             for(long i = 0; i < numberModels; i++)
             {
                 string model = Convert.ToString(i, 2).PadLeft(_kb.Symbols.Count, '0');
@@ -62,10 +63,14 @@ namespace ai_ass2
                     _kb.Symbols.ElementAt(j).Value = (model[j] == '1');
                 }
 
-                if (TTCheckAll()) { trueModels++; }
+                // Check if KB => query
+                if (!(TTCheckAll() & !TTQuery())) { validModels++; }
+                // Check if KB^query
+                if (TTCheckAll() && TTQuery()) { trueModels++; }
             }
 
-            if (trueModels > 0)
+            // KB entails query if (KB => query) is valid in all models
+            if (validModels == numberModels)
             {
                 string output = "YES: ";
                 output += trueModels.ToString();
