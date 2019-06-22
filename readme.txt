@@ -45,17 +45,6 @@ Not Entailed
   ASK
   g
 
- ----------------------------
-| Acknowledgements/Resources |
- ----------------------------
-The only resources that have been referred to in the making
-of this program are lecture slides:
-* COS30019_Lecture_07-2spp.pdf Page 10-15 for forward chaining,
-  particularly the forward chaining algorithm pseudo-code on page 15.
-* COS30019_Lecture_07-2spp.pdf Page 15-20 for backward chaining.
-
-Both examples on the slides assisted me in understanding the gist
-of the algorithms.
  -------
 | Notes |
  -------
