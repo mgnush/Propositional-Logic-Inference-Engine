@@ -1,7 +1,7 @@
  ------------------
 | Inference Engine |
  ------------------
-@Author Magnus Hjorth (100669317)
+@Author Magnus Hjorth 
 
 Launch program by command line:
 iengine method filename
